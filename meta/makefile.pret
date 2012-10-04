@@ -1,0 +1,9 @@
+# This file provides instructions for packaging.
+
+`MooX-Struct`
+	perl_version_from m`MooX::Struct`;
+	version_from      m`MooX::Struct`;
+	readme_from       m`MooX::Struct`;
+	test_requires     p`Test::More 0.61` ;
+	.
+
