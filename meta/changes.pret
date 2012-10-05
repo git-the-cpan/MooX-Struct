@@ -4,3 +4,8 @@
 	issued  2012-10-04;
 	label   "Initial release".
 
+`MooX-Struct 0.002 cpan:TOBYINK`
+	issued  2012-10-05;
+	changeset [
+		item "List dependencies."^^Packaging;
+	].

@@ -7,7 +7,7 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.001';
+	$MooX::Struct::VERSION   = '0.002';
 }
 
 use Moo         1.000000;
