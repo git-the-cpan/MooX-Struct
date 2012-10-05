@@ -5,7 +5,7 @@ NAME
 SYNOPSIS
      use MooX::Struct
         Point   => [ 'x', 'y' ],
-        Point3D => [ -isa => ['Point'], 'z' ],
+        Point3D => [ -extends => ['Point'], 'z' ],
      ;
  
      my $origin = Point3D->new( x => 0, y => 0, z => 0 );
@@ -38,8 +38,8 @@ DESCRIPTION
     be created as read-only attributes), however certain array elements are
     treated specially.
 
-    *   As per the example in the "SYNOPSIS", "-isa" introduces a list of
-        parent classes for the struct. If not specified, then classes
+    *   As per the example in the "SYNOPSIS", "-extends" introduces a list
+        of parent classes for the struct. If not specified, then classes
         inherit from MooX::Struct itself.
 
         Structs can inherit from other structs, or from normal classes. If
@@ -48,12 +48,12 @@ DESCRIPTION
 
          # Not like this.
          use MooX::Struct Point   => [ 'x', 'y' ];
-         use MooX::Struct Point3D => [ -isa => ['Point'], 'z' ];
+         use MooX::Struct Point3D => [ -extends => ['Point'], 'z' ];
  
          # Like this.
          use MooX::Struct
             Point   => [ 'x', 'y' ],
-            Point3D => [ -isa => ['Point'], 'z' ],
+            Point3D => [ -extends => ['Point'], 'z' ],
          ;
 
     *   If an attribute name is followed by a coderef, this is installed as
@@ -77,9 +77,26 @@ DESCRIPTION
          use MooX::Struct
             Person  => [ name => [ is => 'ro', required => 1 ] ];
 
+    *   Attribute names may be "decorated" with prefix and postfix "sigils".
+        The prefix sigils of "@" and "%" specify that the attribute isa
+        arrayref or hashref respectively. (Blessed arrayrefs and hashrefs
+        are accepted; as are objects which overload "@{}" and "%{}".) The
+        prefix sigil "$" specifies that the attribute value must not be an
+        unblessed arrayref or hashref. The postfix sigil "!" specifies that
+        the attribute is required.
+
+         use MooX::Struct
+            Person  => [qw( $name! @children )];
+
+         Person->new();         # dies, name is required
+         Person->new(           # dies, children should be arrayref
+            name     => 'Bob',
+            children => 2,
+         );
+
     Prior to the key-value list, some additional flags can be given. These
-    begin with hyphens. Currently only one flag is supported, "-rw" which
-    indicates that attributes should be read-write rather than read-only.
+    begin with hyphens. The flag "-rw" indicates that attributes should be
+    read-write rather than read-only.
 
      use MooX::Struct -rw,
         Person => [
@@ -89,6 +106,8 @@ DESCRIPTION
               CORE::say "Hello ", $self->name;
            },
         ];
+
+    Flags "-trace" and "-deparse" may be of use debugging.
 
 BUGS
     Please report any bugs to

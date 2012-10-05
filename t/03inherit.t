@@ -2,8 +2,8 @@ use strict;
 use Test::More tests => 20;
 use MooX::Struct
 	Agent        => [ name => undef ],
-	Organisation => [ -isa => ['Agent'], employees => undef, company_number => [is => 'rw']],
-	Person       => [ -isa => ['Agent'] ];
+	Organisation => [ -extends => ['Agent'], employees => undef, company_number => [is => 'rw']],
+	Person       => [ -extends => ['Agent'] ];
 
 my $alice = Person->new(name => 'Alice');
 my $bob   = Person->new(name => 'Bob');

@@ -6,6 +6,13 @@ Home page:    <https://metacpan.org/release/MooX-Struct>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>
 Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
 
+0.003  2012-10-05
+
+ - (Addition) New bang postfix sigil, indicating a required attribute.
+ - (Bugfix) Broken and undocumented sigils feature is now working,
+   documented and tested.
+ - The '-isa' feature for setting superclasses is now called '-extends'.
+
 0.002  2012-10-05
 
  - (Packaging) List dependencies.

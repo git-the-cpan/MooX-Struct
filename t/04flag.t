@@ -2,7 +2,7 @@ use strict;
 use Test::More tests => 1;
 use MooX::Struct -rw,
 	Agent        => [qw( name )],
-	Person       => [ -isa => ['Agent'] ];
+	Person       => [ -extends => ['Agent'] ];
 
 my $bob   = Person->new(name => 'Bob');
 

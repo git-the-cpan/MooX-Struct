@@ -9,3 +9,11 @@
 	changeset [
 		item "List dependencies."^^Packaging;
 	].
+
+`MooX-Struct 0.003 cpan:TOBYINK`
+	issued  2012-10-05;
+	changeset [
+		item "The '-isa' feature for setting superclasses is now called '-extends'."^^Change;
+		item "Broken and undocumented sigils feature is now working, documented and tested."^^Bugfix;
+		item "New bang postfix sigil, indicating a required attribute."^^Addition;
+	].

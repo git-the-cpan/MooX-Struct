@@ -7,7 +7,7 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.002';
+	$MooX::Struct::VERSION   = '0.003';
 }
 
 use Moo         1.000000;
@@ -46,6 +46,26 @@ BEGIN {
 		required => 1,
 	);
 	
+	has trace => (
+		is       => 'lazy',
+	);
+	
+	sub _build_trace
+	{
+		$ENV{PERL_MOOX_STRUCT_TRACE}
+		or shift->flags->{trace};
+	}
+
+	has trace_handle => (
+		is       => 'lazy',
+	);
+	
+	sub _build_trace_handle
+	{
+		require IO::Handle;
+		\*STDERR;
+	}
+
 	my $counter = 0;
 	sub create_class
 	{
@@ -53,6 +73,13 @@ BEGIN {
 		my $klass = sprintf('%s::__ANON__::%04d', $self->base, ++$counter);
 		Moo->_set_superclasses($klass, $self->base);
 		Moo->_maybe_reset_handlemoose($klass);
+		if ($self->trace)
+		{
+			$self->trace_handle->printf(
+				"package %s;\nuse Moo;\n",
+				$klass,
+			);
+		}
 		return $klass;
 	}
 	
@@ -60,17 +87,29 @@ BEGIN {
 	{
 		my ($self, $klass, $name, $val) = @_;
 		
-		confess("option '$name' unknown")
-			unless $name eq '-isa';
+		if ($name eq '-extends' or $name eq '-isa')
+		{
+			my @parents = map {
+				exists $self->class_map->{$_}
+					? $self->class_map->{$_}->()
+					: $_
+			} @$val;
+			Moo->_set_superclasses($klass, @parents);
+			Moo->_maybe_reset_handlemoose($klass);
+			
+			if ($self->trace)
+			{
+				$self->trace_handle->printf(
+					"extends qw(%s)\n",
+					join(q[ ] => @parents),
+				);
+			}
+		}
+		else
+		{
+			confess("option '$name' unknown");
+		}
 		
-		my @parents = map {
-			exists $self->class_map->{$_}
-				? $self->class_map->{$_}->()
-				: $_
-		} @$val;
-		
-		Moo->_set_superclasses($klass, @parents);
-		Moo->_maybe_reset_handlemoose($klass);
 		return;
 	}
 	
@@ -82,6 +121,20 @@ BEGIN {
 			as     => $name,
 			code   => $coderef,
 		};
+		if ($self->trace)
+		{
+			$self->trace_handle->printf(
+				"sub %s { ... }\n",
+				$name,
+			);
+			if ($self->flags->{deparse})
+			{
+				require B::Deparse;
+				my $code = B::Deparse->new(qw(-q -si8T))->coderef2text($coderef);
+				$code =~ s/^/# /mig;
+				$self->trace_handle->printf("$code\n");
+			}
+		}
 		return;
 	}
 	
@@ -97,20 +150,36 @@ BEGIN {
 			),
 		);
 		
+		if ($name =~ /^(.+)\!$/)
+		{
+			$name = $1;
+			$spec{required} = 1;
+		}
+		
 		if ($name =~ /^\@(.+)/)
 		{
 			$name = $1;
-			$spec{isa} ||= does('ARRAY');
+			$spec{isa} ||= sub {
+				die "wrong type for '$name' (not arrayref)"
+					unless does($_[0], 'ARRAY');
+			};
 		}
 		elsif ($name =~ /^\%(.+)/)
 		{
 			$name = $1;
-			$spec{isa} ||= does('HASH');
+			$spec{isa} ||= sub {
+				die "wrong type for '$name' (not hashref)"
+					unless does($_[0], 'HASH');
+			};
 		}
 		elsif ($name =~ /^\$(.+)/)
 		{
 			$name = $1;
-			$spec{isa} ||= sub { blessed($_[0]) or not ref($_[0]) };
+			$spec{isa} ||= sub {
+				my $ref = ref($_[0]);
+				die "wrong type for '$name' (should not be arrayref or hashref)"
+					if $ref eq 'ARRAY' || $ref eq 'HASH';
+			};
 		}
 		
 		return ($name, \%spec);
@@ -122,6 +191,25 @@ BEGIN {
 		my $spec;
 		($name, $spec) = $self->process_spec($klass, $name, $val);
 		
+		if ($self->trace)
+		{
+			require Data::Dumper;
+			my $spec_str = Data::Dumper->new([$spec])->Terse(1)->Indent(0)->Dump;
+			$spec_str =~ s/(^\{)|(\}$)//g;
+			$self->trace_handle->printf(
+				"has %s => (%s);\n",
+				$name,
+				$spec_str,
+			);
+			if ($self->flags->{deparse} and $spec->{isa})
+			{
+				require B::Deparse;
+				my $code = B::Deparse->new(qw(-q -si8T))->coderef2text($spec->{isa});
+				$code =~ s/^/# /mig;
+				$self->trace_handle->printf("$code\n");
+			}
+		}
+
 		Moo
 			->_constructor_maker_for($klass)
 			->register_attribute_specs($name, $spec);
@@ -132,7 +220,7 @@ BEGIN {
 			
 		Moo
 			->_maybe_reset_handlemoose($klass);
-		
+
 		return;
 	}
 	
@@ -214,7 +302,7 @@ MooX::Struct - make simple lightweight record-like structures that make sounds l
 
  use MooX::Struct
     Point   => [ 'x', 'y' ],
-    Point3D => [ -isa => ['Point'], 'z' ],
+    Point3D => [ -extends => ['Point'], 'z' ],
  ;
  
  my $origin = Point3D->new( x => 0, y => 0, z => 0 );
@@ -252,7 +340,7 @@ specially.
 
 =item *
 
-As per the example in the L</SYNOPSIS>, C<< -isa >> introduces a list of
+As per the example in the L</SYNOPSIS>, C<< -extends >> introduces a list of
 parent classes for the struct. If not specified, then classes inherit from
 MooX::Struct itself.
 
@@ -261,12 +349,12 @@ from another struct, then you I<must> define both in the same C<use> statement.
 
  # Not like this.
  use MooX::Struct Point   => [ 'x', 'y' ];
- use MooX::Struct Point3D => [ -isa => ['Point'], 'z' ];
+ use MooX::Struct Point3D => [ -extends => ['Point'], 'z' ];
  
  # Like this.
  use MooX::Struct
     Point   => [ 'x', 'y' ],
-    Point3D => [ -isa => ['Point'], 'z' ],
+    Point3D => [ -extends => ['Point'], 'z' ],
  ;
 
 =item *
@@ -294,11 +382,29 @@ options for the attribute. For example:
  use MooX::Struct
     Person  => [ name => [ is => 'ro', required => 1 ] ];
 
+=item *
+
+Attribute names may be "decorated" with prefix and postfix "sigils". The prefix
+sigils of C<< @ >> and C<< % >> specify that the attribute isa arrayref or
+hashref respectively. (Blessed arrayrefs and hashrefs are accepted; as are
+objects which overload C<< @{} >> and C<< %{} >>.) The prefix sigil C<< $ >>
+specifies that the attribute value must not be an unblessed arrayref or hashref.
+The postfix sigil C<< ! >> specifies that the attribute is required.
+
+ use MooX::Struct
+    Person  => [qw( $name! @children )];
+
+ Person->new();         # dies, name is required
+ Person->new(           # dies, children should be arrayref
+    name     => 'Bob',
+    children => 2,
+ );
+
 =back
 
 Prior to the key-value list, some additional flags can be given. These begin
-with hyphens. Currently only one flag is supported, C<< -rw >> which indicates
-that attributes should be read-write rather than read-only.
+with hyphens. The flag C<< -rw >> indicates that attributes should be
+read-write rather than read-only.
 
  use MooX::Struct -rw,
     Person => [
@@ -308,6 +414,8 @@ that attributes should be read-write rather than read-only.
           CORE::say "Hello ", $self->name;
        },
     ];
+
+Flags C<< -trace >> and C<< -deparse >> may be of use debugging.
 
 =head1 BUGS
 
