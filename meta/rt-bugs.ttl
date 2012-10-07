@@ -1,0 +1,24 @@
+@prefix dbug: <http://ontologi.es/doap-bugs#> .
+@prefix dc: <http://purl.org/dc/terms/> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix prio: <http://purl.org/NET/cpan-uri/rt/priority/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix rt: <http://purl.org/NET/cpan-uri/rt/ticket/> .
+@prefix status: <http://purl.org/NET/cpan-uri/rt/status/> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+_:r1349598628r7 a foaf:Agent ;
+	foaf:mbox <mailto:mail@tobyinkster.co.uk> .
+_:r1349598629r8 a foaf:Agent ;
+	foaf:nick "Nobody" .
+<http://purl.org/NET/cpan-uri/dist/MooX-Struct/project> dbug:issue <http://purl.org/NET/cpan-uri/rt/ticket/80043> .
+<http://purl.org/NET/cpan-uri/rt/ticket/80043> dbug:assignee _:r1349598629r8 ;
+	dbug:id "80043"^^xsd:string ;
+	dbug:page <https://rt.cpan.org/Ticket/Display.html?id=80043> ;
+	dbug:reporter _:r1349598628r7 ;
+	dbug:status status:new ;
+	dc:created "2012-10-06T21:54:22"^^xsd:dateTime ;
+	dc:modified "2012-10-06T21:54:23"^^xsd:dateTime ;
+	a dbug:Issue ;
+	rdfs:label "Hmmm... not working in Perl < 5.14." .

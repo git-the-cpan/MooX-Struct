@@ -17,3 +17,13 @@
 		item "Broken and undocumented sigils feature is now working, documented and tested."^^Bugfix;
 		item "New bang postfix sigil, indicating a required attribute."^^Addition;
 	].
+
+`MooX-Struct 0.004 cpan:TOBYINK`
+	issued  2012-10-07;
+	changeset [
+		item [
+			a dcs:Bugfix;
+			dcs:fixes RT#80043;
+			label "Workaround strange closure bug in Perl < 5.14."@en;
+		];
+	].

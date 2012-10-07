@@ -29,6 +29,7 @@ meta/changes.pret
 meta/doap.pret
 meta/makefile.pret
 meta/people.pret
+meta/rt-bugs.ttl
 README
 t/01basic.t
 t/02basicusage.t

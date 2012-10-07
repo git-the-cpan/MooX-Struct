@@ -7,7 +7,7 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.003';
+	$MooX::Struct::VERSION   = '0.004';
 }
 
 use Moo         1.000000;
@@ -26,13 +26,13 @@ BEGIN {
 
 	has flags => (
 		is       => 'ro',
-		isa      => does('HASH'),
+		isa      => sub { die "flags must be HASH" unless does $_[0], 'HASH' },
 		default  => sub { +{} },
 	);
 	
 	has class_map => (
 		is       => 'ro',
-		isa      => does('HASH'),
+		isa      => sub { die "class_map must be HASH" unless does $_[0], 'HASH' },
 		default  => sub { +{} },
 	);
 	
@@ -242,7 +242,8 @@ BEGIN {
 		my ($self, $subname, $proto) = @_;
 		return sub ()
 		{
-			if (ref $proto) # inflate!
+			1 if $] < 5.014; # bizarre, but necessary!
+			if (ref $proto)  # inflate!
 			{
 				my $klass = $self->create_class;
 				$self->process_argument($klass, @$_)
