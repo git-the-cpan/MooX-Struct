@@ -27,3 +27,17 @@
 			label "Workaround strange closure bug in Perl < 5.14."@en;
 		];
 	].
+
+`MooX-Struct 0.005 cpan:TOBYINK`
+	issued  2012-10-08;
+	changeset [
+		item "The 'object_id' method is now called 'OBJECT_ID'."^^Change;
+		item "New method 'TO_STRING'."^^Addition;
+		item "New method 'TO_HASH'."^^Addition;
+		item "New method 'FIELDS'."^^Addition;
+		item "New method 'TYPE'."^^Addition;
+		item "New method 'CLONE'."^^Addition;
+		item "Provide Point[$x,$y] style constructor."^^Addition;
+		item "Overload a lot of operations on structs."^^Addition;
+		item "Special Data::Printer support."^^Addition;
+	].

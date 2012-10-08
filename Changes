@@ -6,6 +6,18 @@ Home page:    <https://metacpan.org/release/MooX-Struct>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>
 Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
 
+0.005  2012-10-08
+
+ - (Addition) New method 'CLONE'.
+ - (Addition) New method 'FIELDS'.
+ - (Addition) New method 'TO_HASH'.
+ - (Addition) New method 'TO_STRING'.
+ - (Addition) New method 'TYPE'.
+ - (Addition) Overload a lot of operations on structs.
+ - (Addition) Provide Point[$x,$y] style constructor.
+ - (Addition) Special Data::Printer support.
+ - The 'object_id' method is now called 'OBJECT_ID'.
+
 0.004  2012-10-07
 
  - (Bugfix) Workaround strange closure bug in Perl < 5.14.

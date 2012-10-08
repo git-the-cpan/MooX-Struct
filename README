@@ -9,6 +9,9 @@ SYNOPSIS
      ;
  
      my $origin = Point3D->new( x => 0, y => 0, z => 0 );
+ 
+     # or...
+     my $origin = Point3D[ 0, 0, 0 ];
 
 DESCRIPTION
     MooX::Struct allows you to create cheap struct-like classes for your
@@ -24,8 +27,7 @@ DESCRIPTION
     class for you, and installs a lexical alias for it in your namespace.
     Thus your module can create a "Point3D" struct, and some other module
     can too, and they won't interfere with each other. All struct classes
-    inherit from MooX::Struct; and MooX::Struct provides a useful method:
-    "object_id" (see Object::ID).
+    inherit from MooX::Struct.
 
     Arguments for MooX::Struct are key-value pairs, where keys are the
     struct names, and values are arrayrefs.
@@ -44,7 +46,8 @@ DESCRIPTION
 
         Structs can inherit from other structs, or from normal classes. If
         inheriting from another struct, then you *must* define both in the
-        same "use" statement.
+        same "use" statement. Inheriting from a non-struct class is
+        discouraged.
 
          # Not like this.
          use MooX::Struct Point   => [ 'x', 'y' ];
@@ -82,8 +85,10 @@ DESCRIPTION
         arrayref or hashref respectively. (Blessed arrayrefs and hashrefs
         are accepted; as are objects which overload "@{}" and "%{}".) The
         prefix sigil "$" specifies that the attribute value must not be an
-        unblessed arrayref or hashref. The postfix sigil "!" specifies that
-        the attribute is required.
+        unblessed arrayref or hashref. The prefix sigil "+" indicates the
+        attribute is a number, and provides a default value of 0, unless the
+        attribute is required. The postfix sigil "!" specifies that the
+        attribute is required.
 
          use MooX::Struct
             Person  => [qw( $name! @children )];
@@ -108,6 +113,85 @@ DESCRIPTION
         ];
 
     Flags "-trace" and "-deparse" may be of use debugging.
+
+  Instantiating Structs
+    There are two supported methods of instatiating structs. You can use a
+    traditional class-like constructor with named parameters:
+
+     my $point = Point->new( x => 1, y => 2 );
+
+    Or you can use the abbreviated syntax with positional parameters:
+
+     my $point = Point[ 1, 2 ];
+
+    If you know about Moo and peek around in the source code for this
+    module, then I'm sure you can figure out additional ways to instantiate
+    them, but the above are the only supported two.
+
+    When inheritance has been used, it might not always be clear what order
+    the positional parameters come in (though see the documentation for the
+    "FIELDS" below), so the traditional class-like style may be preferred.
+
+  Methods
+    Structs are objects and thus have methods. The following methods are
+    defined:
+
+    "OBJECT_ID"
+        Returns a unique identifier for the object.
+
+    "FIELDS"
+        Returns a list of fields associated with the object. For the
+        "Point3D" struct in the SYNPOSIS, this would be <c>'x', 'y',
+        'z'</c>.
+
+        The order the fields are returned in is equal to the order they must
+        be supplied for the positional constructor.
+
+    "TYPE"
+        Returns the type name of the struct, e.g. <c>'Point3D'</c>.
+
+    "TO_HASH"
+        Returns a reference to an unblessed hash where the object's fields
+        are the keys and the object's values are the hash values.
+
+    "TO_ARRAY"
+        Returns a reference to an unblessed array where the object's values
+        are the array items, in the same order as listed by "FIELDS".
+
+    "TO_STRING"
+        Joins "TO_ARRAY" with whitespace. This is not necessarily a
+        brilliant stringification, but easy enough to overload:
+
+         use MooX::Struct
+            Point => [
+               qw( x y ),
+               TO_STRING => sub {
+                  sprintf "(%d, %d)"), $_[0]->x, $_[0]->y;
+               },
+            ]
+         ;
+
+    "CLONE"
+        Creates a shallow clone of the object.
+
+    "BUILDARGS"
+        Moo internal fu.
+
+    "_data_printer"
+        Automatic pretty printing with Data::Printer.
+
+         use Data::Printer;
+         use MooX::Struct Point => [qw/ +x +y /];
+         my $origin = Point[];
+         p $origin;
+
+    With the exception of "FIELDS" and "TYPE", any of these can be
+    overridden using the standard way of specifying methods for structs.
+
+  Overloading
+    MooX::Struct overloads stringification and array dereferencing. Objects
+    always evaluate to true in a boolean context. (Even if they stringify to
+    the empty string.)
 
 BUGS
     Please report any bugs to

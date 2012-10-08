@@ -1,4 +1,5 @@
 Changes
+examples/triangle.pl
 HACKING
 inc/Module/AutoInstall.pm
 inc/Module/Install.pm
@@ -37,4 +38,6 @@ t/03inherit.t
 t/04flag.t
 t/05methods.t
 t/06sigils.t
+t/07overloading.t
+t/08alt-constructor.t
 SIGNATURE                                Public-key signature (added by MakeMaker)

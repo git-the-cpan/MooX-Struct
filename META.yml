@@ -19,6 +19,7 @@ module_name: MooX::Struct
 name: MooX-Struct
 no_index:
   directory:
+    - examples
     - inc
     - t
     - xt
@@ -36,4 +37,4 @@ resources:
   homepage: https://metacpan.org/release/MooX-Struct
   license: http://dev.perl.org/licenses/
   repository: https://bitbucket.org/tobyink/p5-moox-struct
-version: 0.004
+version: 0.005
