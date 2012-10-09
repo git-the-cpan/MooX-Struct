@@ -7,11 +7,11 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.005';
+	$MooX::Struct::VERSION   = '0.006';
 }
 
 use Moo          1.000000;
-use Object::ID   0         qw( object_id );
+use Object::ID   0         qw(      );
 use Scalar::Does 0         qw( does );
 
 use overload
@@ -23,7 +23,7 @@ use overload
 
 METHODS: {
 	no warnings;
-	sub OBJECT_ID   { goto \&object_id };
+	sub OBJECT_ID   { goto \&Object::ID::object_id };
 	sub FIELDS      { qw() };
 	sub TYPE        { +undef };
 	sub TO_ARRAY    {  [ map {;       $_[0]->$_ } $_[0]->FIELDS ] };
@@ -34,14 +34,15 @@ METHODS: {
 
 sub BUILDARGS
 {
-	my $class = shift;
+	my $class  = shift;
+	my @fields = $class->FIELDS;
+	
 	if (
 		@_ == 1                 and
 		does($_[0], 'ARRAY')    and
 		not does($_[0], 'HASH')
 	)
 	{
-		my @fields = $class->FIELDS;
 		my @values = @{ $_[0] };
 		Carp::confess("too many values passed to constructor (expected @fields); stopped")
 			unless @fields >= @values;
@@ -52,9 +53,43 @@ sub BUILDARGS
 			} 0 .. $#values
 		}
 	}
-	return $class->SUPER::BUILDARGS(@_);
+	
+	my $hashref = $class->SUPER::BUILDARGS(@_);
+	
+	my %tmp = map { $_ => 1 } keys %$hashref;
+	delete $tmp{$_} for @fields;
+	if (my @unknown = sort keys %tmp)
+	{
+		Carp::confess("unknown keys passed to constructor (@unknown); stopped");
+	}
+	
+	return $hashref;
 }
 
+sub EXTEND
+{
+	my ($invocant, @args) = @_;
+	my $base = ref($invocant) || $invocant;
+	
+	my $processor = 'MooX::Struct::Processor'->new;
+	while (@args and $args[0] =~ /^-(.+)$/) {
+		$processor->flags->{ lc($1) } = !!shift;
+	}
+
+	my $subname = undef;
+	$subname = ${ shift @args } if ref($args[0]) eq 'SCALAR';
+
+	my $new_class = $processor->make_sub(
+		$subname,
+		[ -extends => [$base], @args ],
+	)->();
+	return $new_class unless ref $invocant;
+	
+	bless $invocant => $new_class;
+}
+
+# This could do with some improvement from a Data::Printer expert.
+#
 my $done = 0;
 sub _data_printer
 {
@@ -68,7 +103,7 @@ sub _data_printer
 	{
 		return sprintf(
 			"%s[\n\t%s,\n]",
-			Term::ANSIColor::colored($self->TYPE, 'bright_yellow'),
+			Term::ANSIColor::colored($self->TYPE||'struct', 'bright_yellow'),
 			join(qq[,\n\t], map { s/\n/\n\t/gm; $_ } @values),
 		);
 	}
@@ -76,7 +111,7 @@ sub _data_printer
 	{
 		return sprintf(
 			'%s[ %s ]',
-			Term::ANSIColor::colored($self->TYPE, 'bright_yellow'),
+			Term::ANSIColor::colored($self->TYPE||'struct', 'bright_yellow'),
 			join(q[, ], @values),
 		);
 	}
@@ -84,6 +119,12 @@ sub _data_printer
 
 BEGIN {
 	package MooX::Struct::Processor;
+	
+	{
+		no warnings;
+		our $AUTHORITY = 'cpan:TOBYINK';
+		our $VERSION   = '0.006';
+	}
 	
 	sub _uniq { my %seen; grep { not $seen{$_}++ } @_ };
 	
@@ -110,11 +151,6 @@ BEGIN {
 	has base => (
 		is       => 'ro',
 		default  => sub { 'MooX::Struct' },
-	);
-	
-	has 'caller' => (
-		is       => 'ro',
-		required => 1,
 	);
 	
 	has trace => (
@@ -177,6 +213,25 @@ BEGIN {
 			}
 			
 			return map { $_->can('FIELDS') ? $_->FIELDS : () } @parents;
+		}
+		elsif ($name eq '-with')
+		{
+			require Moo::Role;
+			Moo::Role->apply_roles_to_package($klass, @$val);
+			Moo->_maybe_reset_handlemoose($klass);
+			
+			if ($self->trace)
+			{
+				$self->trace_handle->printf(
+					"with qw(%s)\n",
+					join(q[ ] => @$val),
+				);
+			}
+			
+			return map {
+				my $role = $_;
+				grep { not ref $_ } @{ $Moo::Role::INFO{$role}{attributes} }
+			} @$val;
 		}
 		else
 		{
@@ -312,9 +367,6 @@ BEGIN {
 		my $self = shift;
 		my ($klass, $name, $val) = @_;
 		
-		confess("attribute '$name' seems to private")
-			if $name =~ /^___/; # these are reserved for now!
-		
 		return $self->process_meta(@_)      if $name =~ /^-/;
 		return $self->process_method(@_)    if does($val, 'CODE');
 		return $self->process_attribute(@_);
@@ -333,7 +385,7 @@ BEGIN {
 					$self->process_argument($klass, @$_)
 				} @{ Data::OptList::mkopt($proto) };
 				$self->process_method($klass, FIELDS => sub { @fields });
-				$self->process_method($klass, TYPE   => sub { $subname });
+				$self->process_method($klass, TYPE   => sub { $subname }) if defined $subname;
 				$proto = $klass;
 			}
 			return $proto->new(@_) if @_;
@@ -343,7 +395,8 @@ BEGIN {
 	
 	sub process
 	{
-		my $self = shift;
+		my $self   = shift;
+		my $caller = shift;
 		
 		while (@_ and $_[0] =~ /^-(.+)$/) {
 			$self->flags->{ lc($1) } = !!shift;
@@ -356,14 +409,14 @@ BEGIN {
 			
 			$self->class_map->{ $subname } = $self->make_sub($subname, $details);
 			install_sub {
-				into   => $self->caller,
+				into   => $caller,
 				as     => $subname,
 				code   => $self->class_map->{ $subname },
 			};
 		}
 		on_scope_end {
 			namespace::clean->clean_subroutines(
-				$self->caller,
+				$caller,
 				keys %{ $self->class_map },
 			);
 		};
@@ -374,7 +427,7 @@ sub import
 {
 	my $caller = caller;
 	my $class  = shift;
-	"$class\::Processor"->new(caller => scalar caller)->process(@_);
+	"$class\::Processor"->new->process($caller, @_);
 }
 
 no Moo;
@@ -450,6 +503,10 @@ Inheriting from a non-struct class is discouraged.
 
 =item *
 
+Similarly C<< -with >> consumes a list of roles.
+
+=item *
+
 If an attribute name is followed by a coderef, this is installed as a
 method instead.
 
@@ -472,6 +529,8 @@ options for the attribute. For example:
 
  use MooX::Struct
     Person  => [ name => [ is => 'ro', required => 1 ] ];
+
+Using the C<init_arg> option would probably break stuff. Don't do that.
 
 =item *
 
@@ -525,13 +584,21 @@ If you know about Moo and peek around in the source code for this module,
 then I'm sure you can figure out additional ways to instantiate them, but
 the above are the only supported two.
 
-When inheritance has been used, it might not always be clear what order
-the positional parameters come in (though see the documentation for the
+When inheritance or roles have been used, it might not always be clear what
+order the positional parameters come in (though see the documentation for the
 C<FIELDS> below), so the traditional class-like style may be preferred.
 
 =head2 Methods
 
-Structs are objects and thus have methods. The following methods are defined:
+Structs are objects and thus have methods. You can define your own methods
+as described above. MooX::Struct's built-in methods will always obey the
+convention of being in ALL CAPS (except in the case of C<_data_printer>).
+By using lower-case letters to name your own methods, you can avoid
+naming collisions.
+
+The following methods are currently defined. Additionally all the standard
+Perl (C<isa>, C<can>, etc) and Moo (C<new>, C<does>, etc) methods are
+available.
 
 =over
 
@@ -542,14 +609,14 @@ Returns a unique identifier for the object.
 =item C<FIELDS> 
 
 Returns a list of fields associated with the object. For the C<Point3D> struct
-in the SYNPOSIS, this would be <c>'x', 'y', 'z'</c>.
+in the SYNPOSIS, this would be C<< 'x', 'y', 'z' >>.
 
 The order the fields are returned in is equal to the order they must be supplied
 for the positional constructor.
 
 =item C<TYPE>
 
-Returns the type name of the struct, e.g. <c>'Point3D'</c>.
+Returns the type name of the struct, e.g. C<< 'Point3D' >>.
 
 =item C<TO_HASH>
 
@@ -578,6 +645,34 @@ stringification, but easy enough to overload:
 =item C<CLONE>
 
 Creates a shallow clone of the object. 
+
+=item C<EXTEND>
+
+An exverimental feature.
+
+Extend a class or object with additional attributes, methods, etc. This method
+takes almost all the same arguments as C<use MooX::Struct>, albeit with some
+slight differences.
+
+ use MooX::Struct Point => [qw/ +x +y /];
+ my $point = Point[2, 3];
+ $point->EXTEND(-rw, q/+z/);  # extend an object
+ $point->can('z');   # true
+ 
+ my $new_class = Point->EXTEND('+z');  # extend a class
+ my $point_3d  = $new_class->new( x => 1, y => 2, z => 3 );
+ $point_3d->TYPE;  # Point !
+ 
+ my $point_4d = $new_class->EXTEND(\"Point4D", '+t');
+ $point_4d->TYPE;  # Point4D
+ 
+ my $origin = Point[]->EXTEND(-with => [qw/ Math::Role::Origin /]);
+
+This feature has been included mostly because it's easy to implement on top
+of the existing code for processing C<use MooX::Struct>. Some subsets of
+this functionality are sane, such as the ability to add traits to an object.
+Others (like the ability to add a new uninitialized, read-only attribute to
+an existing object) are less sensible.
 
 =item C<BUILDARGS>
 
@@ -610,7 +705,7 @@ L<http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>.
 
 =head1 SEE ALSO
 
-L<Moo>, L<MooseX::Struct>, L<Class::Struct>.
+L<Moo>, L<MooX::Struct::Util>, L<MooseX::Struct>, L<Class::Struct>.
 
 =head1 AUTHOR
 

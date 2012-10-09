@@ -59,6 +59,8 @@ DESCRIPTION
             Point3D => [ -extends => ['Point'], 'z' ],
          ;
 
+    *   Similarly "-with" consumes a list of roles.
+
     *   If an attribute name is followed by a coderef, this is installed as
         a method instead.
 
@@ -79,6 +81,9 @@ DESCRIPTION
 
          use MooX::Struct
             Person  => [ name => [ is => 'ro', required => 1 ] ];
+
+        Using the "init_arg" option would probably break stuff. Don't do
+        that.
 
     *   Attribute names may be "decorated" with prefix and postfix "sigils".
         The prefix sigils of "@" and "%" specify that the attribute isa
@@ -128,27 +133,34 @@ DESCRIPTION
     module, then I'm sure you can figure out additional ways to instantiate
     them, but the above are the only supported two.
 
-    When inheritance has been used, it might not always be clear what order
-    the positional parameters come in (though see the documentation for the
-    "FIELDS" below), so the traditional class-like style may be preferred.
+    When inheritance or roles have been used, it might not always be clear
+    what order the positional parameters come in (though see the
+    documentation for the "FIELDS" below), so the traditional class-like
+    style may be preferred.
 
   Methods
-    Structs are objects and thus have methods. The following methods are
-    defined:
+    Structs are objects and thus have methods. You can define your own
+    methods as described above. MooX::Struct's built-in methods will always
+    obey the convention of being in ALL CAPS (except in the case of
+    "_data_printer"). By using lower-case letters to name your own methods,
+    you can avoid naming collisions.
+
+    The following methods are currently defined. Additionally all the
+    standard Perl ("isa", "can", etc) and Moo ("new", "does", etc) methods
+    are available.
 
     "OBJECT_ID"
         Returns a unique identifier for the object.
 
     "FIELDS"
         Returns a list of fields associated with the object. For the
-        "Point3D" struct in the SYNPOSIS, this would be <c>'x', 'y',
-        'z'</c>.
+        "Point3D" struct in the SYNPOSIS, this would be 'x', 'y', 'z'.
 
         The order the fields are returned in is equal to the order they must
         be supplied for the positional constructor.
 
     "TYPE"
-        Returns the type name of the struct, e.g. <c>'Point3D'</c>.
+        Returns the type name of the struct, e.g. 'Point3D'.
 
     "TO_HASH"
         Returns a reference to an unblessed hash where the object's fields
@@ -174,6 +186,34 @@ DESCRIPTION
     "CLONE"
         Creates a shallow clone of the object.
 
+    "EXTEND"
+        An exverimental feature.
+
+        Extend a class or object with additional attributes, methods, etc.
+        This method takes almost all the same arguments as "use
+        MooX::Struct", albeit with some slight differences.
+
+         use MooX::Struct Point => [qw/ +x +y /];
+         my $point = Point[2, 3];
+         $point->EXTEND(-rw, q/+z/);  # extend an object
+         $point->can('z');   # true
+ 
+         my $new_class = Point->EXTEND('+z');  # extend a class
+         my $point_3d  = $new_class->new( x => 1, y => 2, z => 3 );
+         $point_3d->TYPE;  # Point !
+ 
+         my $point_4d = $new_class->EXTEND(\"Point4D", '+t');
+         $point_4d->TYPE;  # Point4D
+ 
+         my $origin = Point[]->EXTEND(-with => [qw/ Math::Role::Origin /]);
+
+        This feature has been included mostly because it's easy to implement
+        on top of the existing code for processing "use MooX::Struct". Some
+        subsets of this functionality are sane, such as the ability to add
+        traits to an object. Others (like the ability to add a new
+        uninitialized, read-only attribute to an existing object) are less
+        sensible.
+
     "BUILDARGS"
         Moo internal fu.
 
@@ -198,7 +238,7 @@ BUGS
     <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>.
 
 SEE ALSO
-    Moo, MooseX::Struct, Class::Struct.
+    Moo, MooX::Struct::Util, MooseX::Struct, Class::Struct.
 
 AUTHOR
     Toby Inkster <tobyink@cpan.org>.

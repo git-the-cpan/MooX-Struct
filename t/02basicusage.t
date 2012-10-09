@@ -36,5 +36,5 @@ ok !eval {
 $acme->company_number(12345);
 is($acme->company_number, 12345, 'accessors can be made read-write');
 
-can_ok $alice => 'object_id';
-isnt($alice->object_id, $bob->object_id, 'object_id is unique identifier');
+can_ok $alice => 'OBJECT_ID';
+isnt($alice->OBJECT_ID, $bob->OBJECT_ID, 'OBJECT_ID is unique identifier');

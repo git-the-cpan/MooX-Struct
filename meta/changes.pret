@@ -41,3 +41,14 @@
 		item "Overload a lot of operations on structs."^^Addition;
 		item "Special Data::Printer support."^^Addition;
 	].
+
+`MooX-Struct 0.006 cpan:TOBYINK`
+	issued  2012-10-09;
+	changeset [
+		item "Fix minor pod syntax error."^^Bugfix;
+		item "Bundle MooX::Struct::Util."^^Addition;
+		item "Allow structs to consume roles using '-with' option."^^Addition;		
+		item "Constructor is now strict; it will croak if passed hash keys it doesn't recognise."^^Change;
+		item "New experimental method 'EXTEND'."^^Addition;
+		item "Dropped 'object_id' alias for 'OBJECT_ID'."^^Removal;
+	].
