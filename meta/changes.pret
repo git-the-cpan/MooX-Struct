@@ -52,3 +52,9 @@
 		item "New experimental method 'EXTEND'."^^Addition;
 		item "Dropped 'object_id' alias for 'OBJECT_ID'."^^Removal;
 	].
+
+`MooX-Struct 0.007 cpan:TOBYINK`
+	issued  2012-10-28;
+	changeset [
+		item "Allow namespace::clean behaviour to be avoided via a '-retain' flag."^^Addition;
+	].

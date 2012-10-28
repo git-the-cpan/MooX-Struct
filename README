@@ -117,6 +117,10 @@ DESCRIPTION
            },
         ];
 
+    The "-retain" flag can be used to indicate that MooX::Struct should not
+    use namespace::clean to enforce lexicalness on your struct class
+    aliases.
+
     Flags "-trace" and "-deparse" may be of use debugging.
 
   Instantiating Structs

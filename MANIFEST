@@ -44,5 +44,6 @@ t/08alt-constructor.t
 t/09roles.t
 t/10strict-constructor.t
 t/11extend.t
+t/12lexical.t
 t/99lazy.t
 SIGNATURE                                Public-key signature (added by MakeMaker)

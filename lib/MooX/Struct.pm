@@ -7,7 +7,7 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.006';
+	$MooX::Struct::VERSION   = '0.007';
 }
 
 use Moo          1.000000;
@@ -97,7 +97,7 @@ sub _data_printer
 	require Term::ANSIColor;
 	my $self   = shift;
 	
-	my @values = map { scalar Data::Printer::p($_) } @$self;
+	my @values = map { scalar Data::Printer::p(\$_) } @$self;
 
 	if (grep /\n/, @values)
 	{
@@ -123,7 +123,7 @@ BEGIN {
 	{
 		no warnings;
 		our $AUTHORITY = 'cpan:TOBYINK';
-		our $VERSION   = '0.006';
+		our $VERSION   = '0.007';
 	}
 	
 	sub _uniq { my %seen; grep { not $seen{$_}++ } @_ };
@@ -414,12 +414,13 @@ BEGIN {
 				code   => $self->class_map->{ $subname },
 			};
 		}
+		
 		on_scope_end {
 			namespace::clean->clean_subroutines(
 				$caller,
 				keys %{ $self->class_map },
 			);
-		};
+		} unless $self->flags->{ retain };
 	}
 };
 
@@ -566,6 +567,10 @@ read-write rather than read-only.
           CORE::say "Hello ", $self->name;
        },
     ];
+
+The C<< -retain >> flag can be used to indicate that MooX::Struct should
+B<not> use namespace::clean to enforce lexicalness on your struct class
+aliases.
 
 Flags C<< -trace >> and C<< -deparse >> may be of use debugging.
 
