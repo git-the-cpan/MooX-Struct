@@ -7,7 +7,7 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.007';
+	$MooX::Struct::VERSION   = '0.008';
 }
 
 use Moo          1.000000;
@@ -123,7 +123,7 @@ BEGIN {
 	{
 		no warnings;
 		our $AUTHORITY = 'cpan:TOBYINK';
-		our $VERSION   = '0.007';
+		our $VERSION   = '0.008';
 	}
 	
 	sub _uniq { my %seen; grep { not $seen{$_}++ } @_ };
@@ -176,8 +176,14 @@ BEGIN {
 	my $counter = 0;
 	sub create_class
 	{
-		my $self  = shift;
-		my $klass = sprintf('%s::__ANON__::%04d', $self->base, ++$counter);
+		my ($self, $opts) = @_;
+		my $klass;
+		for my $o (@$opts) {
+			next unless $o->[0] eq '-class';
+			$klass = ref($o->[1]) eq 'ARRAY' ? join('::', @{$o->[1]}) : ${$o->[1]};
+			last;
+		}
+		$klass ||= sprintf('%s::__ANON__::%04d', $self->base, ++$counter);
 		Moo->_set_superclasses($klass, $self->base);
 		Moo->_maybe_reset_handlemoose($klass);
 		if ($self->trace)
@@ -232,6 +238,10 @@ BEGIN {
 				my $role = $_;
 				grep { not ref $_ } @{ $Moo::Role::INFO{$role}{attributes} }
 			} @$val;
+		}
+		elsif ($name eq '-class')
+		{
+			# skip; already handled by 'create_class' method (hopefully)
 		}
 		else
 		{
@@ -380,10 +390,11 @@ BEGIN {
 			1 if $] < 5.014; # bizarre, but necessary!
 			if (ref $proto)  # inflate!
 			{
-				my $klass  = $self->create_class;
+				my $opts   = Data::OptList::mkopt($proto);
+				my $klass  = $self->create_class($opts);
 				my @fields = _uniq map {
 					$self->process_argument($klass, @$_)
-				} @{ Data::OptList::mkopt($proto) };
+				} @$opts;
 				$self->process_method($klass, FIELDS => sub { @fields });
 				$self->process_method($klass, TYPE   => sub { $subname }) if defined $subname;
 				$proto = $klass;

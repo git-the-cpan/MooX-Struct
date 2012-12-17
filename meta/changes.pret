@@ -58,3 +58,10 @@
 	changeset [
 		item "Allow namespace::clean behaviour to be avoided via a '-retain' flag."^^Addition;
 	].
+
+`MooX-Struct 0.008 cpan:TOBYINK`
+	issued  2012-12-17;
+	changeset [
+		item "Provide '-class' feature (currently tested for but not documented)."^^Addition;
+		item "Add pod to test suite."^^Documentation;
+	].

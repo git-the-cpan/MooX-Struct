@@ -6,6 +6,12 @@ Home page:    <https://metacpan.org/release/MooX-Struct>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>
 Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
 
+0.008  2012-12-17
+
+ - (Addition) Provide '-class' feature (currently tested for but not
+   documented).
+ - (Documentation) Add pod to test suite.
+
 0.007  2012-10-28
 
  - (Addition) Allow namespace::clean behaviour to be avoided via a
