@@ -163,6 +163,10 @@ DESCRIPTION
         The order the fields are returned in is equal to the order they must
         be supplied for the positional constructor.
 
+        Attributes inherited from roles, or from non-struct base classes are
+        not included in "FIELDS", and thus cannot be used in the positional
+        constructor.
+
     "TYPE"
         Returns the type name of the struct, e.g. 'Point3D'.
 

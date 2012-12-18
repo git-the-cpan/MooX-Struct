@@ -18,7 +18,7 @@ the same terms as the Perl 5 programming language system itself.
 =cut
 
 use strict;
-use Test::More tests => 24;
+use Test::More;
 use MooX::Struct
 	Agent        => [ name => undef, -class => \'Local::Test::Class1' ],
 	Organisation => [ -extends => ['Agent'], employees => undef, company_number => [is => 'rw']],
@@ -74,3 +74,10 @@ is($acme->company_number, 12345, 'accessors can be made read-write');
 can_ok $alice => 'OBJECT_ID';
 isnt($alice->OBJECT_ID, $bob->OBJECT_ID, 'OBJECT_ID is unique identifier');
 
+
+use MooX::Struct XXX1 => [ qw< $foo > ];
+use MooX::Struct XXX2 => [ -extends => [ XXX1 ], qw< $bar > ];
+
+is_deeply([XXX2->FIELDS], [qw< foo bar >]);
+
+done_testing;

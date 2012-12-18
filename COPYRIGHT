@@ -108,11 +108,15 @@ Files: t/12lexical.t
 Copyright: This software is copyright (c) 2012 by Toby Inkster.
 License: GPL-1.0+ or Artistic-1.0
 
+Files: t/98baseclass.t
+Copyright: This software is copyright (c) 2012 by Toby Inkster.
+License: GPL-1.0+ or Artistic-1.0
+
 Files: t/99lazy.t
 Copyright: This software is copyright (c) 2012 by Toby Inkster.
 License: GPL-1.0+ or Artistic-1.0
 
-Files: Changes HACKING LICENSE MANIFEST.SKIP Makefile.PL README examples/triangle.pl inc/Module/Package/Dist/RDF.pm meta/changes.pret meta/doap.pret meta/makefile.pret meta/people.pret meta/rt-bugs.ttl
+Files: Changes HACKING LICENSE MANIFEST.SKIP Makefile.PL NEWS README examples/triangle.pl inc/Module/Package/Dist/RDF.pm meta/changes.pret meta/doap.pret meta/makefile.pret meta/people.pret meta/rt-bugs.ttl
 Copyright: Unknown
 License: Unknown
 

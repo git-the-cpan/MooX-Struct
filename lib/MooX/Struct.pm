@@ -7,7 +7,7 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.008';
+	$MooX::Struct::VERSION   = '0.009';
 }
 
 use Moo          1.000000;
@@ -56,12 +56,12 @@ sub BUILDARGS
 	
 	my $hashref = $class->SUPER::BUILDARGS(@_);
 	
-	my %tmp = map { $_ => 1 } keys %$hashref;
-	delete $tmp{$_} for @fields;
-	if (my @unknown = sort keys %tmp)
-	{
-		Carp::confess("unknown keys passed to constructor (@unknown); stopped");
-	}
+#	my %tmp = map { $_ => 1 } keys %$hashref;
+#	delete $tmp{$_} for @fields;
+#	if (my @unknown = sort keys %tmp)
+#	{
+#		Carp::confess("unknown keys passed to constructor (@unknown); stopped");
+#	}
 	
 	return $hashref;
 }
@@ -123,7 +123,7 @@ BEGIN {
 	{
 		no warnings;
 		our $AUTHORITY = 'cpan:TOBYINK';
-		our $VERSION   = '0.008';
+		our $VERSION   = '0.009';
 	}
 	
 	sub _uniq { my %seen; grep { not $seen{$_}++ } @_ };
@@ -184,8 +184,8 @@ BEGIN {
 			last;
 		}
 		$klass ||= sprintf('%s::__ANON__::%04d', $self->base, ++$counter);
-		Moo->_set_superclasses($klass, $self->base);
-		Moo->_maybe_reset_handlemoose($klass);
+		"Moo"->_set_superclasses($klass, $self->base);
+		"Moo"->_maybe_reset_handlemoose($klass);
 		if ($self->trace)
 		{
 			$self->trace_handle->printf(
@@ -207,8 +207,8 @@ BEGIN {
 					? $self->class_map->{$_}->()
 					: $_
 			} @$val;
-			Moo->_set_superclasses($klass, @parents);
-			Moo->_maybe_reset_handlemoose($klass);
+			"Moo"->_set_superclasses($klass, @parents);
+			"Moo"->_maybe_reset_handlemoose($klass);
 			
 			if ($self->trace)
 			{
@@ -223,8 +223,8 @@ BEGIN {
 		elsif ($name eq '-with')
 		{
 			require Moo::Role;
-			Moo::Role->apply_roles_to_package($klass, @$val);
-			Moo->_maybe_reset_handlemoose($klass);
+			"Moo::Role"->apply_roles_to_package($klass, @$val);
+			"Moo"->_maybe_reset_handlemoose($klass);
 			
 			if ($self->trace)
 			{
@@ -234,10 +234,9 @@ BEGIN {
 				);
 			}
 			
-			return map {
-				my $role = $_;
-				grep { not ref $_ } @{ $Moo::Role::INFO{$role}{attributes} }
-			} @$val;
+			return
+			#	map  { my $role = $_; grep { not ref $_ } @{ $Moo::Role::INFO{$role}{attributes} } }
+			#	@$val;
 		}
 		elsif ($name eq '-class')
 		{
@@ -268,7 +267,7 @@ BEGIN {
 			if ($self->flags->{deparse})
 			{
 				require B::Deparse;
-				my $code = B::Deparse->new(qw(-q -si8T))->coderef2text($coderef);
+				my $code = "B::Deparse"->new(qw(-q -si8T))->coderef2text($coderef);
 				$code =~ s/^/# /mig;
 				$self->trace_handle->printf("$code\n");
 			}
@@ -341,7 +340,7 @@ BEGIN {
 		if ($self->trace)
 		{
 			require Data::Dumper;
-			my $spec_str = Data::Dumper->new([$spec])->Terse(1)->Indent(0)->Dump;
+			my $spec_str = "Data::Dumper"->new([$spec])->Terse(1)->Indent(0)->Dump;
 			$spec_str =~ s/(^\{)|(\}$)//g;
 			$self->trace_handle->printf(
 				"has %s => (%s);\n",
@@ -351,21 +350,21 @@ BEGIN {
 			if ($self->flags->{deparse} and $spec->{isa})
 			{
 				require B::Deparse;
-				my $code = B::Deparse->new(qw(-q -si8T))->coderef2text($spec->{isa});
+				my $code = "B::Deparse"->new(qw(-q -si8T))->coderef2text($spec->{isa});
 				$code =~ s/^/# /mig;
 				$self->trace_handle->printf("$code\n");
 			}
 		}
 		
-		Moo
+		"Moo"
 			->_constructor_maker_for($klass)
 			->register_attribute_specs($name, $spec);
 			
-		Moo
+		"Moo"
 			->_accessor_maker_for($klass)
 			->generate_method($klass, $name, $spec);
 			
-		Moo
+		"Moo"
 			->_maybe_reset_handlemoose($klass);
 		
 		return $name;
@@ -392,9 +391,13 @@ BEGIN {
 			{
 				my $opts   = Data::OptList::mkopt($proto);
 				my $klass  = $self->create_class($opts);
+				my $seen_extends;
 				my @fields = _uniq map {
-					$self->process_argument($klass, @$_)
+					++$seen_extends if $_->[0] eq '-extends';
+					$self->process_argument($klass, @$_);
 				} @$opts;
+				unshift @fields, $self->base->FIELDS
+					if !$seen_extends && $self->base->can('FIELDS');
 				$self->process_method($klass, FIELDS => sub { @fields });
 				$self->process_method($klass, TYPE   => sub { $subname }) if defined $subname;
 				$proto = $klass;
@@ -629,6 +632,9 @@ in the SYNPOSIS, this would be C<< 'x', 'y', 'z' >>.
 
 The order the fields are returned in is equal to the order they must be supplied
 for the positional constructor.
+
+Attributes inherited from roles, or from non-struct base classes are not included
+in C<FIELDS>, and thus cannot be used in the positional constructor.
 
 =item C<TYPE>
 

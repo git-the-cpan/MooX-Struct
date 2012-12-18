@@ -3,6 +3,8 @@
 Check that the constructor is strict (throws an error if it sees unknown
 attributes).
 
+This test is currently disabled, as the constructor is no longer strict.
+
 =head1 AUTHOR
 
 Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
@@ -16,7 +18,7 @@ the same terms as the Perl 5 programming language system itself.
 
 =cut
 
-use Test::More tests => 1;
+use Test::More skip_all => 'no longer valid';
 use MooX::Struct Thingy => [qw/ $x /];
 
 ok not eval { my $thingy = Thingy->new(y => 1) };

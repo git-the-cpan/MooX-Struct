@@ -38,10 +38,16 @@ use MooX::Struct
 
 is_deeply(
 	[ Thingy->FIELDS ],
-	[ qw/ attr2 attr1 attr3 attr4 / ],
+	[ qw/ attr3 attr4 / ],
 );
 
-my $thingy = Thingy[qw/ 2 1 3 4 /];
+my $thingy = Thingy[qw/ 3 4 /];
+#is($thingy->attr1, 1);
+#is($thingy->attr2, 2);
+is($thingy->attr3, 3);
+is($thingy->attr4, 4);
+
+$thingy = Thingy->new(map { ; "attr$_", $_ } 1..4);
 is($thingy->attr1, 1);
 is($thingy->attr2, 2);
 is($thingy->attr3, 3);

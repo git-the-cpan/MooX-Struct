@@ -6,6 +6,15 @@ Home page:    <https://metacpan.org/release/MooX-Struct>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>
 Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
 
+0.009  2012-12-18
+
+ - (Bugfix) Fix an internal issue in MooX::Struct::Processor, whereby it
+   would ignore attributes inherited from the default base class when
+   building the FIELDS method.
+ - (Packaging) Moar test cases.
+ - Attributes inherited from roles are no longer included in FIELDS.
+ - Moo-style constructor is no longer strict. (This may change back!)
+
 0.008  2012-12-17
 
  - (Addition) Provide '-class' feature (currently tested for but not

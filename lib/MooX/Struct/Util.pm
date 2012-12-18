@@ -1,7 +1,7 @@
 package MooX::Struct::Util;
 
 our $AUTHORITY = 'cpan:TOBYINK';
-our $VERSION   = '0.008';
+our $VERSION   = '0.009';
 
 use strict;
 use Sub::Install qw(install_sub);
