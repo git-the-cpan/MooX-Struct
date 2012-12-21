@@ -74,3 +74,13 @@
 		item "Moo-style constructor is no longer strict. (This may change back!)"^^Change;
 		item "Attributes inherited from roles are no longer included in FIELDS."^^Change;
 	].
+
+`MooX-Struct 0.010 cpan:TOBYINK`
+	issued  2012-12-21;
+	label   "100% Devel::Cover coverage!";
+	changeset [
+		item "Processing flags in EXTEND method could cause infinite loop."^^Bugfix;
+		item "Passing objects overloading hash dereference to the constructor was supposed to be supported; now it actually works."^^Bugfix;
+		item "Usage with Data::Printer was causing an exception related to prototypes."^^Bugfix;
+		item "Many new test cases."^^Addition;
+	].

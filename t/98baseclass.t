@@ -62,5 +62,54 @@ my $bar = Bar[1, 2];
 is($bar->foo, 1);
 is($bar->bar, 2);
 
+# The "interesting" thing about this package is that it provides
+# no FIELDS method.
+BEGIN {
+	package Quux;
+	use Moo;
+	has bumf => (is => 'rw');
+};
+
+BEGIN {
+	"MooX::Struct::Processor"
+		-> new(
+			base  => 'Quux',
+			flags => { retain => 1 },
+		)
+		-> process(
+			main => (
+				Quuux => ['$xyzzy'],
+				Quuuux => (),
+			),
+		)
+	;
+};
+
+my $quuux = Quuux->new(xyzzy => 4, bumf => 2);
+is_deeply([$quuux->FIELDS], ['xyzzy']);
+is($quuux->xyzzy, 4);
+is($quuux->bumf, 2);
+like(ref $quuux, qr{^Quux::__ANON__::});
+
+my $quuuux = Quuuux->new(bumf => 2);
+is_deeply([$quuuux->FIELDS], []);
+is($quuuux->bumf, 2);
+like(ref $quuuux, qr{^Quux::__ANON__::});
+
+
+BEGIN {
+	"MooX::Struct::Processor"
+		-> new(
+			flags => { retain => 1 },
+		)
+		-> process(
+			main => (
+				Quux2 => [ -extends=>['Quux'], '$xyzzy' ],
+			),
+		)
+	;
+};
+is_deeply([Quux2->FIELDS], ['xyzzy']);
+
 done_testing;
 

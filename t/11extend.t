@@ -43,4 +43,30 @@ is_deeply([$new->FIELDS], ['x', 'y', 'z', 'w']);
 
 isnt($new->OBJECT_ID, $old_id, 'OBJECT_ID does change during CLONE+EXTEND');
 
+use MooX::Struct Person => ['$name'];
+
+my $Employee = Person->EXTEND(\"Employee", '$title');
+isa_ok($Employee, Person);
+
+my $bob = $Employee->new(['Robert', 'Staff']);
+isa_ok($bob, $Employee);
+isa_ok($bob, Person);
+is($bob->TYPE, 'Employee');
+is_deeply([$bob->FIELDS], [qw/ name title /]);
+is($bob->name, 'Robert');
+is($bob->title, 'Staff');
+ok !eval { $bob->title('Manager') };  # read-only
+
+my $PromotableEmployee = Person->EXTEND(-rw, \"PromotableEmployee", '$title');
+isa_ok($PromotableEmployee, Person);
+my $alice = $PromotableEmployee->new(['Alice', 'Staff']);
+isa_ok($alice, $PromotableEmployee);
+isa_ok($alice, Person);
+is($alice->TYPE, 'PromotableEmployee');
+is_deeply([$alice->FIELDS], [qw/ name title /]);
+is($alice->name, 'Alice');
+is($alice->title, 'Staff');
+$alice->title('Manager');  # read-write
+is($alice->title, 'Manager');
+
 done_testing;
