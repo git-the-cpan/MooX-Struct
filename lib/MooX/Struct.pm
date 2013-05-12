@@ -7,7 +7,7 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.010';
+	$MooX::Struct::VERSION   = '0.011';
 }
 
 use Moo          1.000000;
@@ -126,7 +126,7 @@ BEGIN {
 	{
 		no warnings;
 		our $AUTHORITY = 'cpan:TOBYINK';
-		our $VERSION   = '0.010';
+		our $VERSION   = '0.011';
 	}
 	
 	sub _uniq { my %seen; grep { not $seen{$_}++ } @_ };
@@ -723,6 +723,22 @@ MooX::Struct overloads stringification and array dereferencing. Objects always
 evaluate to true in a boolean context. (Even if they stringify to the empty
 string.)
 
+=head1 CAVEATS
+
+Because you only get an alias for the struct class, you need to be careful
+with some idioms:
+
+   my $point = Point3D->new(x => 1, y => 2, z => 3);
+   $point->isa("Point3D");   # false!
+   $point->isa( Point3D );   # true
+
+   my %args  = (...);
+   my $class = exists $args{z} ? "Point3D" : "Point";  # wrong!
+   $class->new(%args);
+   
+   my $class = exists $args{z} ?  Point3D  :  Point ;  # right
+   $class->new(%args);
+
 =head1 BUGS
 
 Please report any bugs to
@@ -738,7 +754,7 @@ Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
 
 =head1 COPYRIGHT AND LICENCE
 
-This software is copyright (c) 2012 by Toby Inkster.
+This software is copyright (c) 2012-2013 by Toby Inkster.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

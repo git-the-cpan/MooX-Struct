@@ -6,6 +6,11 @@ Home page:    <https://metacpan.org/release/MooX-Struct>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>
 Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
 
+0.011  2013-05-12
+
+ - (Documentation) Add CAVEATS section to documentation.
+   ++$PERIGRIN
+
 0.010  2012-12-21  # 100% Devel::Cover coverage!
 
  - (Addition) Many new test cases.

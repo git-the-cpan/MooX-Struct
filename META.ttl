@@ -1,0 +1,340 @@
+@prefix cpan:  <http://purl.org/NET/cpan-uri/person/> .
+@prefix cpant: <http://purl.org/NET/cpan-uri/terms#> .
+@prefix dbug:  <http://ontologi.es/doap-bugs#> .
+@prefix dc:    <http://purl.org/dc/terms/> .
+@prefix dcs:   <http://ontologi.es/doap-changeset#> .
+@prefix dist:  <http://purl.org/NET/cpan-uri/dist/MooX-Struct/> .
+@prefix doap:  <http://usefulinc.com/ns/doap#> .
+@prefix foaf:  <http://xmlns.com/foaf/0.1/> .
+@prefix nfo:   <http://www.semanticdesktop.org/ontologies/2007/03/22/nfo#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix status: <http://purl.org/NET/cpan-uri/rt/status/> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+
+dist:project
+	a                 doap:Project;
+	doap:name         "MooX-Struct";
+	cpant:perl_version_from [
+		a nfo:FileDataObject;
+		a nfo:SourceCode;
+		rdfs:label "MooX::Struct";
+		nfo:fileName "lib/MooX/Struct.pm";
+		nfo:programmingLanguage "Perl";
+	];
+	cpant:readme_from [
+		a nfo:FileDataObject;
+		a nfo:SourceCode;
+		rdfs:label "MooX::Struct";
+		nfo:fileName "lib/MooX/Struct.pm";
+		nfo:programmingLanguage "Perl";
+	];
+	cpant:requires    "B::Hooks::EndOfScope"^^cpant:dsWithoutVersion;
+	cpant:requires    "Data::OptList"^^cpant:dsWithoutVersion;
+	cpant:requires    "Moo 1.000000"^^cpant:dsWithVersion;
+	cpant:requires    "Object::ID"^^cpant:dsWithoutVersion;
+	cpant:requires    "Scalar::Does"^^cpant:dsWithoutVersion;
+	cpant:requires    "Sub::Install"^^cpant:dsWithoutVersion;
+	cpant:requires    "namespace::clean"^^cpant:dsWithoutVersion;
+	cpant:test_requires "Test::More 0.61"^^cpant:dsWithVersion;
+	cpant:version_from [
+		a nfo:FileDataObject;
+		a nfo:SourceCode;
+		rdfs:label "MooX::Struct";
+		nfo:fileName "lib/MooX/Struct.pm";
+		nfo:programmingLanguage "Perl";
+	];
+	dbug:issue        <http://purl.org/NET/cpan-uri/rt/ticket/80043>;
+	dc:contributor    cpan:tobyink;
+	doap:bug-database <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>;
+	doap:created      "2012-10-04"^^xsd:date;
+	doap:developer    cpan:tobyink;
+	doap:download-page <https://metacpan.org/release/MooX-Struct>;
+	doap:homepage     <https://metacpan.org/release/MooX-Struct>;
+	doap:license      <http://dev.perl.org/licenses/>;
+	doap:maintainer   cpan:tobyink;
+	doap:programming-language "Perl";
+	doap:release      dist:v_0-001;
+	doap:release      dist:v_0-002;
+	doap:release      dist:v_0-003;
+	doap:release      dist:v_0-004;
+	doap:release      dist:v_0-005;
+	doap:release      dist:v_0-006;
+	doap:release      dist:v_0-007;
+	doap:release      dist:v_0-008;
+	doap:release      dist:v_0-009;
+	doap:release      dist:v_0-010;
+	doap:release      dist:v_0-011;
+	doap:repository   [
+		a doap:GitRepository;
+		doap:browse <https://github.com/tobyink/p5-moox-struct>;
+	];
+	doap:shortdesc    "make simple lightweight record-like structures that make sounds like cows".
+
+dist:v_0-001
+	a                 doap:Version;
+	rdfs:label        "Initial release";
+	dc:identifier     "MooX-Struct-0.001"^^xsd:string;
+	dc:issued         "2012-10-04"^^xsd:date;
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.001.tar.gz>;
+	doap:revision     "0.001"^^xsd:string.
+
+dist:v_0-002
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.002"^^xsd:string;
+	dc:issued         "2012-10-05"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Packaging;
+			rdfs:label "List dependencies.";
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.002.tar.gz>;
+	doap:revision     "0.002"^^xsd:string.
+
+dist:v_0-003
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.003"^^xsd:string;
+	dc:issued         "2012-10-05"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Change;
+			rdfs:label "The '-isa' feature for setting superclasses is now called '-extends'.";
+		];
+		dcs:item [
+			a dcs:Bugfix;
+			rdfs:label "Broken and undocumented sigils feature is now working, documented and tested.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "New bang postfix sigil, indicating a required attribute.";
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.003.tar.gz>;
+	doap:revision     "0.003"^^xsd:string.
+
+dist:v_0-004
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.004"^^xsd:string;
+	dc:issued         "2012-10-07"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Bugfix;
+			rdfs:label "Workaround strange closure bug in Perl < 5.14."@en;
+			dcs:fixes <http://purl.org/NET/cpan-uri/rt/ticket/80043>;
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.004.tar.gz>;
+	doap:revision     "0.004"^^xsd:string.
+
+dist:v_0-005
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.005"^^xsd:string;
+	dc:issued         "2012-10-08"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "Provide Point[$x,$y] style constructor.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "Overload a lot of operations on structs.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "Special Data::Printer support.";
+		];
+		dcs:item [
+			a dcs:Change;
+			rdfs:label "The 'object_id' method is now called 'OBJECT_ID'.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "New method 'TO_STRING'.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "New method 'TO_HASH'.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "New method 'FIELDS'.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "New method 'TYPE'.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "New method 'CLONE'.";
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.005.tar.gz>;
+	doap:revision     "0.005"^^xsd:string.
+
+dist:v_0-006
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.006"^^xsd:string;
+	dc:issued         "2012-10-09"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Bugfix;
+			rdfs:label "Fix minor pod syntax error.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "Bundle MooX::Struct::Util.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "Allow structs to consume roles using '-with' option.";
+		];
+		dcs:item [
+			a dcs:Change;
+			rdfs:label "Constructor is now strict; it will croak if passed hash keys it doesn't recognise.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "New experimental method 'EXTEND'.";
+		];
+		dcs:item [
+			a dcs:Removal;
+			rdfs:label "Dropped 'object_id' alias for 'OBJECT_ID'.";
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.006.tar.gz>;
+	doap:revision     "0.006"^^xsd:string.
+
+dist:v_0-007
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.007"^^xsd:string;
+	dc:issued         "2012-10-28"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "Allow namespace::clean behaviour to be avoided via a '-retain' flag.";
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.007.tar.gz>;
+	doap:revision     "0.007"^^xsd:string.
+
+dist:v_0-008
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.008"^^xsd:string;
+	dc:issued         "2012-12-17"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "Provide '-class' feature (currently tested for but not documented).";
+		];
+		dcs:item [
+			a dcs:Documentation;
+			rdfs:label "Add pod to test suite.";
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.008.tar.gz>;
+	doap:revision     "0.008"^^xsd:string.
+
+dist:v_0-009
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.009"^^xsd:string;
+	dc:issued         "2012-12-18"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Bugfix;
+			rdfs:label "Fix an internal issue in MooX::Struct::Processor, whereby it would ignore attributes inherited from the default base class when building the FIELDS method.";
+		];
+		dcs:item [ a dcs:Packaging; rdfs:label "Moar test cases." ];
+		dcs:item [
+			a dcs:Change;
+			rdfs:label "Moo-style constructor is no longer strict. (This may change back!)";
+		];
+		dcs:item [
+			a dcs:Change;
+			rdfs:label "Attributes inherited from roles are no longer included in FIELDS.";
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.009.tar.gz>;
+	doap:revision     "0.009"^^xsd:string.
+
+dist:v_0-010
+	a                 doap:Version;
+	rdfs:label        "100% Devel::Cover coverage!";
+	dc:identifier     "MooX-Struct-0.010"^^xsd:string;
+	dc:issued         "2012-12-21"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Bugfix;
+			rdfs:label "Processing flags in EXTEND method could cause infinite loop.";
+		];
+		dcs:item [
+			a dcs:Bugfix;
+			rdfs:label "Passing objects overloading hash dereference to the constructor was supposed to be supported; now it actually works.";
+		];
+		dcs:item [
+			a dcs:Bugfix;
+			rdfs:label "Usage with Data::Printer was causing an exception related to prototypes.";
+		];
+		dcs:item [
+			a dcs:Addition;
+			rdfs:label "Many new test cases.";
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.010.tar.gz>;
+	doap:revision     "0.010"^^xsd:string.
+
+dist:v_0-011
+	a                 doap:Version;
+	dc:identifier     "MooX-Struct-0.011"^^xsd:string;
+	dc:issued         "2013-05-12"^^xsd:date;
+	dcs:changeset     [
+		dcs:item [
+			a dcs:Documentation;
+			rdfs:label "Add CAVEATS section to documentation.";
+			dcs:thanks cpan:perigrin;
+			rdfs:seeAlso <https://rt.cpan.org/Ticket/Display.html?id=84278>;
+		];
+	];
+	dcs:released-by   cpan:tobyink;
+	doap:file-release <http://backpan.cpan.org/authors/id/T/TO/TOBYINK/MooX-Struct-0.011.tar.gz>;
+	doap:revision     "0.011"^^xsd:string.
+
+cpan:perigrin
+	a                 foaf:Person;
+	foaf:name         "Chris Prather";
+	foaf:nick         "PERIGRIN";
+	foaf:page         <https://metacpan.org/author/PERIGRIN>.
+
+cpan:tobyink
+	a                 foaf:Person;
+	foaf:name         "Toby Inkster";
+	foaf:mbox         <mailto:tobyink@cpan.org>;
+	foaf:nick         "TOBYINK";
+	foaf:page         <https://metacpan.org/author/TOBYINK>.
+
+<http://dev.perl.org/licenses/>
+	dc:title          "the same terms as the perl 5 programming language system itself".
+
+<http://purl.org/NET/cpan-uri/rt/ticket/80043>
+	a                 dbug:Issue;
+	rdfs:label        "Hmmm... not working in Perl < 5.14.";
+	dbug:assignee     [ a foaf:Agent; foaf:nick "Nobody" ];
+	dbug:id           "80043"^^xsd:string;
+	dbug:page         <https://rt.cpan.org/Ticket/Display.html?id=80043>;
+	dbug:reporter     [
+		a foaf:Agent;
+		foaf:mbox <mailto:mail@tobyinkster.co.uk>;
+	];
+	dbug:status       status:new;
+	dc:created        "2012-10-06T21:54:22"^^xsd:dateTime;
+	dc:modified       "2012-10-06T21:54:23"^^xsd:dateTime.
+

@@ -84,3 +84,14 @@
 		item "Usage with Data::Printer was causing an exception related to prototypes."^^Bugfix;
 		item "Many new test cases."^^Addition;
 	].
+
+`MooX-Struct 0.011 cpan:TOBYINK`
+	issued  2013-05-12;
+	changeset [
+		item [
+			a dcs:Documentation;
+			label "Add CAVEATS section to documentation.";
+			seealso <https://rt.cpan.org/Ticket/Display.html?id=84278>;
+			dcs:thanks cpan:PERIGRIN;
+		];
+	].

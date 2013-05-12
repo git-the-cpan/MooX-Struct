@@ -9,7 +9,7 @@
 	:download-page        <https://metacpan.org/release/MooX-Struct>;
 	:bug-database         <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>;
 	:created              2012-10-04;
-	:repository           [ a :HgRepository; :browse <https://bitbucket.org/tobyink/p5-moox-struct> ];
+	:repository           [ a :GitRepository; :browse <https://github.com/tobyink/p5-moox-struct> ];
 	:license              <http://dev.perl.org/licenses/>;
 	:maintainer           cpan:TOBYINK;
 	:developer            cpan:TOBYINK.
