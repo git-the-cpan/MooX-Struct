@@ -6,6 +6,10 @@ Home page:    <https://metacpan.org/release/MooX-Struct>
 Bug tracker:  <http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct>
 Maintainer:   Toby Inkster <mailto:tobyink@cpan.org>
 
+0.012  2013-05-18
+
+ - (Bugfix) Stop relying on hash order to pass t/14trace.t.
+
 0.011  2013-05-12
 
  - (Documentation) Add CAVEATS section to documentation.

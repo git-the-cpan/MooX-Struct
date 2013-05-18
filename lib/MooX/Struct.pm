@@ -7,7 +7,7 @@ use utf8;
 
 BEGIN {
 	$MooX::Struct::AUTHORITY = 'cpan:TOBYINK';
-	$MooX::Struct::VERSION   = '0.011';
+	$MooX::Struct::VERSION   = '0.012';
 }
 
 use Moo          1.000000;
@@ -126,7 +126,7 @@ BEGIN {
 	{
 		no warnings;
 		our $AUTHORITY = 'cpan:TOBYINK';
-		our $VERSION   = '0.011';
+		our $VERSION   = '0.012';
 	}
 	
 	sub _uniq { my %seen; grep { not $seen{$_}++ } @_ };
@@ -343,7 +343,7 @@ BEGIN {
 		if ($self->trace)
 		{
 			require Data::Dumper;
-			my $spec_str = "Data::Dumper"->new([$spec])->Terse(1)->Indent(0)->Dump;
+			my $spec_str = "Data::Dumper"->new([$spec])->Terse(1)->Indent(0)->Sortkeys(1)->Dump;
 			$spec_str =~ s/(^\{)|(\}$)//g;
 			$self->trace_handle->printf(
 				"has %s => (%s);\n",

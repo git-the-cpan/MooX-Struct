@@ -95,3 +95,9 @@
 			dcs:thanks cpan:PERIGRIN;
 		];
 	].
+
+`MooX-Struct 0.012 cpan:TOBYINK`
+	issued  2013-05-18;
+	changeset [
+		item "Stop relying on hash order to pass t/14trace.t."^^Bugfix;
+	].

@@ -43,7 +43,7 @@ my $obj = new_ok Something(), [[1]];
 is($output, <<"EXPECTED");
 package @{[ Something() ]};
 use Moo;
-has foo => ('isa' => sub { "DUMMY" },'is' => 'ro');
+has foo => ('is' => 'ro','isa' => sub { "DUMMY" });
 sub announce_foo { ... }
 sub FIELDS { ... }
 sub TYPE { ... }

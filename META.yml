@@ -37,6 +37,6 @@ resources:
   homepage: https://metacpan.org/release/MooX-Struct
   license: http://dev.perl.org/licenses/
   repository: https://github.com/tobyink/p5-moox-struct
-version: 0.011
+version: 0.012
 x_contributors:
   - Nobody
