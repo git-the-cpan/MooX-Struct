@@ -1,0 +1,84 @@
+{
+   "abstract" : "make simple lightweight record-like structures that make sounds like cows",
+   "author" : [
+      "Toby Inkster (TOBYINK) <tobyink@cpan.org>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Moose::Meta::Class::__ANON__::SERIAL::11 version , CPAN::Meta::Converter version 2.140640",
+   "keywords" : [],
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "MooX-Struct",
+   "no_index" : {
+      "directory" : [
+         "eg",
+         "examples",
+         "inc",
+         "t",
+         "xt"
+      ]
+   },
+   "optional_features" : {},
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.17"
+         }
+      },
+      "runtime" : {
+         "requires" : {
+            "B::Hooks::EndOfScope" : "0",
+            "Data::OptList" : "0",
+            "Moo" : "1.000000",
+            "Object::ID" : "0",
+            "Scalar::Does" : "0",
+            "Sub::Install" : "0",
+            "namespace::clean" : "0"
+         }
+      },
+      "test" : {
+         "requires" : {
+            "Test::More" : "0.61"
+         }
+      }
+   },
+   "provides" : {
+      "MooX::Struct" : {
+         "file" : "lib/MooX/Struct.pm",
+         "version" : "0.013"
+      },
+      "MooX::Struct::Processor" : {
+         "file" : "lib/MooX/Struct.pm",
+         "version" : "0.013"
+      },
+      "MooX::Struct::Util" : {
+         "file" : "lib/MooX/Struct/Util.pm",
+         "version" : "0.013"
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "X_identifier" : "http://purl.org/NET/cpan-uri/dist/MooX-Struct/project",
+      "bugtracker" : {
+         "web" : "http://rt.cpan.org/Dist/Display.html?Queue=MooX-Struct"
+      },
+      "homepage" : "https://metacpan.org/release/MooX-Struct",
+      "license" : [
+         "http://dev.perl.org/licenses/"
+      ],
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/tobyink/p5-moox-struct.git",
+         "web" : "https://github.com/tobyink/p5-moox-struct"
+      }
+   },
+   "version" : "0.013",
+   "x_contributors" : [
+      "NOBODY"
+   ]
+}
